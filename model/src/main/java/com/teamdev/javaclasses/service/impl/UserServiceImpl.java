@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
                             "Reason: invalid Username or password.",
                     Username.value()));
         }
-        throw new AuthenticationException("Invalid Username or password.");
+        throw new AuthenticationException("Invalid username or password.");
     }
 
     @Override

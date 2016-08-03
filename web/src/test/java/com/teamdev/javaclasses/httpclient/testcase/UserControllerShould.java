@@ -23,7 +23,7 @@ public class UserControllerShould {
     private final HttpClientTestUnit testUnit = new HttpClientTestUnitImpl(client);
 
     @Test
-    public void handleSuccessfullyUserRegistration() {
+    public void handleSuccessfulUserRegistration() {
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("username", randomUUID().toString()));
         params.add(new BasicNameValuePair("password", "12345"));
@@ -69,7 +69,7 @@ public class UserControllerShould {
         params.add(new BasicNameValuePair("password", "123"));
         params.add(new BasicNameValuePair("passwordConfirm", "123"));
 
-        testUnit.sendPost(new Request(params, baseUrl));
+        testUnit.sendPost(new Request(params, baseUrl + "register"));
 
         Response response = testUnit.sendPost(new Request(params, baseUrl + "register"));
         response
@@ -83,7 +83,7 @@ public class UserControllerShould {
         params.add(new BasicNameValuePair("username", randomUUID().toString()));
         params.add(new BasicNameValuePair("password", "123"));
 
-        Response response = testUnit.sendPost(new Request(params, baseUrl));
+        Response response = testUnit.sendPost(new Request(params, baseUrl + "login"));
         response
                 .isStatusCodeEquals(555)
                 .hasProperty("message", "Invalid username or password.");
@@ -95,7 +95,7 @@ public class UserControllerShould {
         params.add(new BasicNameValuePair("username", ""));
         params.add(new BasicNameValuePair("password", ""));
 
-        Response response = testUnit.sendPost(new Request(params, baseUrl));
+        Response response = testUnit.sendPost(new Request(params, baseUrl + "login"));
         response
                 .isStatusCodeEquals(555)
                 .hasProperty("message", "Fields cannot be empty.");
@@ -120,7 +120,7 @@ public class UserControllerShould {
         params.add(new BasicNameValuePair("username", username));
         params.add(new BasicNameValuePair("password", "123"));
 
-        Response loginResponse = testUnit.sendPost(new Request(params, baseUrl));
+        Response loginResponse = testUnit.sendPost(new Request(params, baseUrl + "login"));
         loginResponse
                 .isStatusCodeEquals(SC_OK)
                 .isJson();
