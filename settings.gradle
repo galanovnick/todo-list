@@ -1,4 +1,5 @@
 rootProject.name = 'todoList'
 include 'model'
 include 'persistence'
+include 'web'
 
