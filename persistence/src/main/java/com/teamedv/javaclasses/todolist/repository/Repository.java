@@ -11,7 +11,7 @@ import java.util.Optional;
  * @param <ObjectType> - object type
  * @param <ObjectId> - object id
  */
-interface Repository<ObjectType extends Entity<ObjectId>, ObjectId extends EntityId> {
+public interface Repository<ObjectType extends Entity<ObjectId>, ObjectId extends EntityId> {
 
     /**
      * Add object to repository.
