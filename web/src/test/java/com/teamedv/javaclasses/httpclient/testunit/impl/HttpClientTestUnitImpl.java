@@ -6,6 +6,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 
 import java.io.IOException;
 
@@ -28,6 +29,21 @@ public class HttpClientTestUnitImpl implements HttpClientTestUnit {
         try {
             post.setEntity(new UrlEncodedFormEntity(request.getParams()));
             return new Response(httpClient.execute(post));
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Unexpected exception: " + e.getClass().getName());
+        }
+        return null;
+    }
+
+    @Override
+    public Response sendPut(Request request) {
+        HttpPut put = new HttpPut(request.getUrl());
+        put.setHeader("User-Agent", USER_AGENT);
+
+        try {
+            put.setEntity(new UrlEncodedFormEntity(request.getParams()));
+            return new Response(httpClient.execute(put));
         } catch (Exception e) {
             e.printStackTrace();
             fail("Unexpected exception: " + e.getClass().getName());
