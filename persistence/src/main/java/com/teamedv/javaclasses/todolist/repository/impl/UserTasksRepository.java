@@ -1,10 +1,13 @@
 package com.teamedv.javaclasses.todolist.repository.impl;
 
 import com.teamedv.javaclasses.todolist.entity.UserTask;
+import com.teamedv.javaclasses.todolist.entity.tiny.TaskId;
 import com.teamedv.javaclasses.todolist.entity.tiny.UserId;
 import com.teamedv.javaclasses.todolist.entity.tiny.UserTaskId;
 
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -20,6 +23,16 @@ public class UserTasksRepository extends InMemoryRepository<UserTask, UserTaskId
         return entries.values().stream()
                 .filter(userTask -> userTask.getUserId().equals(userId))
                 .collect(Collectors.toList());
+    }
+
+    public void deleteByTaskId(TaskId taskId) {
+        Iterator<Map.Entry<UserTaskId, UserTask>> iterator = entries.entrySet().iterator();
+        while (iterator.hasNext()) {
+            UserTask next = iterator.next().getValue();
+            if (next.getTaskId().equals(taskId)) {
+                iterator.remove();
+            }
+        }
     }
 
     @Override

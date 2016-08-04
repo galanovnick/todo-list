@@ -1,10 +1,12 @@
 package com.teamdev.javaclasses.service;
 
+import com.sun.tracing.dtrace.Attributes;
 import com.teamdev.javaclasses.service.dto.TaskDto;
 import com.teamdev.javaclasses.service.impl.TaskServiceImpl;
 import com.teamedv.javaclasses.todolist.entity.Task;
 import com.teamedv.javaclasses.todolist.entity.tiny.TaskId;
 import com.teamedv.javaclasses.todolist.entity.tiny.UserId;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,10 +20,18 @@ public class TaskServiceShould {
 
     private final TaskService taskService = TaskServiceImpl.getInstance();
 
-    private final UserId userId = new UserId(1L);
+    private UserId userId;
 
     @Before
     public void before() {
+        userId = new UserId(1L);
+        if (taskService.getByUser(userId).size() > 0) {
+            fail("Repository is not empty.");
+        }
+    }
+
+    @After
+    public void after() {
         if (taskService.getByUser(userId).size() > 0) {
             fail("Repository is not empty.");
         }
