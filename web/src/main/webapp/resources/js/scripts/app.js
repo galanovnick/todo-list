@@ -8,8 +8,13 @@ require.config({
 
 define(function(require) {
 
+	require("events");
+	require("dto/userDto");
 	require("lib/eventBus");
 	require("todolist");
+	require("service/remoteUserService");
+	require("uiComponents/registration");
+	require("uiComponents/login");
 
 	var app = new TodoListApp("main-container").init();
 });
