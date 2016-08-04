@@ -11,6 +11,8 @@ public class TaskRepository extends InMemoryRepository<Task, TaskId> {
 
     private final AtomicLong idCounter = new AtomicLong(0L);
 
+    private TaskRepository(){}
+
     @Override
     protected TaskId nextId() {
         return new TaskId(idCounter.getAndAdd(1L));

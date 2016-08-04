@@ -14,6 +14,8 @@ public class UserTasksRepository extends InMemoryRepository<UserTask, UserTaskId
 
     private final AtomicLong idCounter = new AtomicLong(0L);
 
+    private UserTasksRepository(){}
+
     public Collection<UserTask> getUserTasksByUser(UserId userId) {
         return entries.values().stream()
                 .filter(userTask -> userTask.getUserId().equals(userId))
