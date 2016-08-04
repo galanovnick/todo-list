@@ -3,16 +3,16 @@ var RegistrationComponent = function(_componentRootId, _rootId, _eventBus) {
 	var _init = function() {
 		$('#' + _rootId).mustache('registration-template', {id: _componentRootId});
 		$("#" + _componentRootId + " .register").click(function() {
-			var username = $("#" + _componentRootId + " .username").val();
+			var email = $("#" + _componentRootId + " .email").val();
 			var password = $("#" + _componentRootId + " .password").val();
 			var passwordConfirm = $("#" + _componentRootId + " .password_r").val();
 
-			_register(new UserDto(username, password, passwordConfirm));
+			_register(new UserDto(email, password, passwordConfirm));
 		});
 	};
 
 	var _register = function(user) {
-		console.log("Trying to post 'userAddedEvent' (user = " + user.username + ")...");
+		console.log("Trying to post 'userAddedEvent' (user = " + user.email + ")...");
 		_eventBus.post(user, events.userAddedEvent);
 
 	};
@@ -24,7 +24,7 @@ var RegistrationComponent = function(_componentRootId, _rootId, _eventBus) {
 	var _resetFields = function() {
 		$("#" + _componentRootId + " .error").html("");
 
-		$("#" + _componentRootId + " .username").val("");
+		$("#" + _componentRootId + " .email").val("");
 		$("#" + _componentRootId + " .password").val("");
 		$("#" + _componentRootId + " .password_r").val("");
 	};

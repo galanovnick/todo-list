@@ -16,6 +16,8 @@ define(function(require) {
 	require("service/remoteTaskService");
 	require("uiComponents/registration");
 	require("uiComponents/login");
+	require("uiComponents/tasks");
+	require("uiComponents/add-task");
 
 	var app = new TodoListApp("main-container").init();
 });

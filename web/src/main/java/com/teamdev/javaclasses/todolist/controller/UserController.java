@@ -16,6 +16,7 @@ import com.teamedv.javaclasses.todolist.entity.tiny.Email;
 import java.util.Optional;
 
 import static com.teamdev.javaclasses.todolist.controller.ControllerConstants.*;
+import static com.teamdev.javaclasses.todolist.handler.HttpRequestMethod.GET;
 import static com.teamdev.javaclasses.todolist.handler.HttpRequestMethod.POST;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 
@@ -44,7 +45,7 @@ public class UserController extends AbstractTodoListApplicationController {
             JsonContent result = new JsonContent();
 
             RegistrationDto regDto = new RegistrationDto(
-                    new Email(request.getParameter(USERNAME_PARAMETER)),
+                    new Email(request.getParameter(EMAIL_PARAMETER)),
                     new Password(request.getParameter(PASSWORD_PARAMETER)),
                     new Password(request.getParameter(PASSWORD_CONFIRM_PARAMETER))
             );
@@ -69,7 +70,7 @@ public class UserController extends AbstractTodoListApplicationController {
             AuthenticationTokenDto token;
 
             try {
-                token = userService.login(new Email(request.getParameter(USERNAME_PARAMETER)),
+                token = userService.login(new Email(request.getParameter(EMAIL_PARAMETER)),
                         new Password(request.getParameter(PASSWORD_PARAMETER)));
             } catch (AuthenticationException e) {
                 result.put(MESSAGE_PARAMETER, e.getMessage());
@@ -81,7 +82,22 @@ public class UserController extends AbstractTodoListApplicationController {
     }
 
     private void registerLoginGet(HandlerRegistry handlerRegistry) {
-        handleGet("/api/login", handlerRegistry);
+        UrlMethodPair postUrlMethodPair = new UrlMethodPair("/api/login", GET);
+        handlerRegistry.register(postUrlMethodPair, ((request, response) -> {
+            Optional<AuthenticationTokenDto> token =
+                    userService.checkAuthentication(
+                            new AuthenticationTokenDto(request.getParameter("token")));
+
+            if (token.isPresent()) {
+                String userEmail = userService.getUser(token.get().getUserId()).getEmail();
+                JsonContent result = new JsonContent();
+                result.put(EMAIL_PARAMETER, userEmail);
+                return new JsonResultWriter(result, 200);
+            }
+            else {
+                return authenticationRequiredErrorWriter();
+            }
+        }));
     }
 
     private void registerUsernamePost(HandlerRegistry handlerRegistry) {
@@ -94,7 +110,7 @@ public class UserController extends AbstractTodoListApplicationController {
 
             if (token.isPresent()) {
                 JsonContent result = new JsonContent();
-                result.put(USERNAME_PARAMETER,
+                result.put(EMAIL_PARAMETER,
                         userService.getUser(token.get().getUserId())
                                 .getEmail());
                 return new JsonResultWriter(result, 200);

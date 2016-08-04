@@ -1,6 +1,6 @@
-var UserDto = function(username, password, passwordConfirm) {
+var UserDto = function(email, password, passwordConfirm) {
 	return {
-		"username": username,
+		"email": email,
 		"password": password,
 		"passwordConfirm": passwordConfirm
 	}

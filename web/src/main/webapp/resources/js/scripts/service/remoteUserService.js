@@ -8,7 +8,7 @@ var UserService = function(_userEventBus) {
         $.ajax({
             type: "post",
             data: {
-                username: user.username,
+                email: user.email,
                 password: user.password,
                 passwordConfirm: user.passwordConfirm
             },
@@ -16,7 +16,7 @@ var UserService = function(_userEventBus) {
             dataType: "json",
             jsonp: false,
             success: function() {
-                _userEventBus.post(user.username, events.successfulRegistrationEvent);
+                _userEventBus.post(user.email, events.successfulRegistrationEvent);
             },
             error: function(response) {
                 response = JSON.parse(response.responseText);
@@ -29,7 +29,7 @@ var UserService = function(_userEventBus) {
         $.ajax({
             type: "post",
             data: {
-                username: user.username,
+                email: user.email,
                 password: user.password
             },
             url: "/api/login",
@@ -38,7 +38,7 @@ var UserService = function(_userEventBus) {
             success: function(response) {
                 _userEventBus.post({
                     token: response.token,
-                    username: user.username
+                    email: user.email
                 }, events.successfulAuthenticationEvent);
             },
             error: function(response) {
@@ -47,6 +47,24 @@ var UserService = function(_userEventBus) {
             }
         });
     };
+
+    var _checkToken = function(token) {
+        $.ajax({
+            type: "get",
+            data: {
+                token: token
+            },
+            url: "/api/login",
+            dataType: "json",
+            jsonp: false,
+            success: function(response) {
+                _userEventBus.post({
+                    email: response.email,
+                    token: token
+                }, events.successfulAuthenticationEvent);
+            }
+        });
+    }
 
     var _onUserAdded = function(user) {
         _create(user);
@@ -58,7 +76,8 @@ var UserService = function(_userEventBus) {
 
     return {
         "onUserAdded": _onUserAdded,
-        "onUserAuthenticated": _onUserAuthenticated
+        "onUserAuthenticated": _onUserAuthenticated,
+        "checkToken": _checkToken
     }
 };
 

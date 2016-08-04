@@ -3,10 +3,10 @@ var UserLoginComponent = function(_componentRootId, _rootId, _eventBus) {
 		$('#' + _rootId).mustache('login-template', {id: _componentRootId});
 
 		$("#" + _componentRootId + " .login").click(function() {
-			var username = $("#" + _componentRootId + " .username").val();
+			var email = $("#" + _componentRootId + " .email").val();
 			var password = $("#" + _componentRootId + " .password").val();
 
-			_login(new UserDto(username, password, ""));				
+			_login(new UserDto(email, password, ""));
 		});
 	};
 
@@ -15,11 +15,12 @@ var UserLoginComponent = function(_componentRootId, _rootId, _eventBus) {
 	};
 
 	var _onUserSuccessfullyAuthenticated = function(userData) {
+		localStorage.setItem("token", userData.token);
 		$("#" + _componentRootId).remove();
 		$('<input>')
 			.attr('type', 'hidden')
-			.attr('id', 'u-name')
-			.val(userData.username)
+			.attr('id', 'u-email')
+			.val(userData.email)
 			.appendTo(("#" + _rootId));
 		$('<input>')
 			.attr('type', 'hidden')

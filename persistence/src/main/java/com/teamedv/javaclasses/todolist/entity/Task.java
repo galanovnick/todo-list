@@ -9,10 +9,20 @@ public class Task implements Entity<TaskId> {
     private String description;
     private UserId creatorId;
     private boolean done = false;
+    private String creationDate;
 
-    public Task(String description, UserId creatorId) {
+    public Task(String description, UserId creatorId, String creationDate) {
         this.description = description;
         this.creatorId = creatorId;
+        this.creationDate = creationDate;
+    }
+
+    public String getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(String creationDate) {
+        this.creationDate = creationDate;
     }
 
     @Override
@@ -59,7 +69,8 @@ public class Task implements Entity<TaskId> {
         if (done != task.done) return false;
         if (id != null ? !id.equals(task.id) : task.id != null) return false;
         if (description != null ? !description.equals(task.description) : task.description != null) return false;
-        return creatorId != null ? creatorId.equals(task.creatorId) : task.creatorId == null;
+        if (creatorId != null ? !creatorId.equals(task.creatorId) : task.creatorId != null) return false;
+        return creationDate != null ? creationDate.equals(task.creationDate) : task.creationDate == null;
 
     }
 
@@ -69,6 +80,7 @@ public class Task implements Entity<TaskId> {
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (creatorId != null ? creatorId.hashCode() : 0);
         result = 31 * result + (done ? 1 : 0);
+        result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
         return result;
     }
 }

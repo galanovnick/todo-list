@@ -5,7 +5,7 @@ package com.teamdev.javaclasses.todolist.controller;
     private ControllerConstants() {
     }
 
-    /*package*/ final static String USERNAME_PARAMETER = "username";
+    /*package*/ final static String EMAIL_PARAMETER = "email";
     /*package*/ final static String PASSWORD_PARAMETER = "password";
     /*package*/ final static String PASSWORD_CONFIRM_PARAMETER = "passwordConfirm";
 

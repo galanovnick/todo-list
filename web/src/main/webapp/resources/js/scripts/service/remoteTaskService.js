@@ -30,7 +30,8 @@ var TaskService = function(_userEventBus) {
             data: {
                 token: task.token,
                 description: task.description,
-                isDone: task.isDone
+                isDone: task.isDone,
+                taskId: task.taskId
             },
             url: "/api/task",
             dataType: "json",
@@ -40,7 +41,7 @@ var TaskService = function(_userEventBus) {
             },
             error: function(response) {
                 response = JSON.parse(response.responseText);
-                _userEventBus.post(response.message, events.tasEditionFailedEvent);
+                _userEventBus.post(response.message, events.taskEditionFailedEvent);
             }
         });
     };

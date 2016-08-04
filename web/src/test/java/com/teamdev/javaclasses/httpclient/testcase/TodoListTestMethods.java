@@ -17,7 +17,7 @@ import java.util.List;
     /*package*/ static Response registerUser(String username, String password,
                                               String passwordConfirm, HttpClientTestUnit testUnit) {
         List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("username", username));
+        params.add(new BasicNameValuePair("email", username));
         params.add(new BasicNameValuePair("password", password));
         params.add(new BasicNameValuePair("passwordConfirm", passwordConfirm));
 
@@ -26,7 +26,7 @@ import java.util.List;
 
     /*package*/ static Response loginUser(String username, String password, HttpClientTestUnit testUnit) {
         List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("username", username));
+        params.add(new BasicNameValuePair("email", username));
         params.add(new BasicNameValuePair("password", password));
 
         return testUnit.sendPost(new Request(params, baseUrl + "login"));

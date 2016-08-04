@@ -49,7 +49,8 @@ public class TaskServiceImpl implements TaskService {
     public TaskDto getById(TaskId taskId) {
         Optional<Task> one = taskRepository.findOne(taskId);
         if (one.isPresent()) {
-            return new TaskDto(one.get().getDescription(), one.get().getCreatorId(), one.get().isDone());
+            return new TaskDto(one.get().getDescription(),
+                    one.get().getCreatorId(), one.get().getCreationDate(), one.get().isDone());
         }
         throw new IllegalStateException("Attempt to get task by invalid id.");
     }
@@ -64,6 +65,7 @@ public class TaskServiceImpl implements TaskService {
                                 one.get().getId(),
                                 one.get().getDescription(),
                                 one.get().getCreatorId(),
+                                one.get().getCreationDate(),
                                 one.get().isDone());
                     } else {
                         throw new IllegalStateException("Attempt to get task by invalid id.");

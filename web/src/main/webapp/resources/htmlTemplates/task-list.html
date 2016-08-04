@@ -1,0 +1,27 @@
+<script id="task-list-template" type="text/html">
+    <div class="container" id="{{id}}">
+        <!-- {{ ^tasks }} -->
+        No task yet
+        <!-- {{ /tasks }} -->
+      <table style="width: 100%">
+          <thead>
+          <tr>
+              <th>Description</th>
+              <th>Creation date</th>
+              <th>Completed</th>
+              <th>Delete</th>
+          </tr>
+          </thead>
+          <tbody>
+          <!-- {{ #tasks }} -->
+            <tr {{#isDone}}style="background-color: gray"{{/isDone}}>
+                <td class="description">{{description}}</td>
+                <td>{{creationDate}}</td>
+                <td><input type="checkbox" id="{{taskId}}" class="is-done-checkbox" {{#isDone}}checked{{/isDone}}/></td>
+                <td><input type="button" id="{{taskId}}" class="delete-task-btn" value="X"/></td>
+            </tr>
+          <!-- {{ /tasks }} -->
+          </tbody>
+      </table>
+    </div>
+</script>

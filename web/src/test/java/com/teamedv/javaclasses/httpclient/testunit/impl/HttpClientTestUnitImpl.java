@@ -40,10 +40,9 @@ public class HttpClientTestUnitImpl implements HttpClientTestUnit {
     @Override
     public Response sendPut(Request request) {
         HttpPut put = new HttpPut(request.getUrl());
-        final JsonObject json = new JsonObject();
-        request.getParams().forEach(param -> json.addProperty(param.getName(), param.getValue()));
+        put.setHeader("User-Agent", USER_AGENT);
         try {
-            put.setEntity(new StringEntity(json.toString()));
+            put.setEntity(new UrlEncodedFormEntity(request.getParams()));
             return new Response(httpClient.execute(put));
         } catch (Exception e) {
             e.printStackTrace();

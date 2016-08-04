@@ -14,7 +14,12 @@ import com.teamedv.javaclasses.todolist.entity.Task;
 import com.teamedv.javaclasses.todolist.entity.tiny.TaskId;
 import com.teamedv.javaclasses.todolist.entity.tiny.UserId;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -37,18 +42,19 @@ public class TaskController extends AbstractTodoListApplicationController {
     private void registerTaskPut(HandlerRegistry handlerRegistry) {
         UrlMethodPair urlMethodPair = new UrlMethodPair("/api/task", PUT);
         handlerRegistry.register(urlMethodPair, ((request, response) -> {
-            System.out.println(request.getParameter("description"));
+            Map<String, String> putRequestParams = getPutRequestParams(request);
             Optional<AuthenticationTokenDto> token =
                     userService.checkAuthentication(
-                            new AuthenticationTokenDto(request.getParameter("token")));
+                            new AuthenticationTokenDto(putRequestParams.get("token")));
 
             if (token.isPresent()) {
-                Task task = new Task(request.getParameter("description"), new UserId(-1L));
-                task.setDone(Boolean.parseBoolean(request.getParameter("isDone")));
+                Task task = new Task(putRequestParams.get("description"),
+                        new UserId(-1L), "");
+                task.setDone(Boolean.parseBoolean(putRequestParams.get("isDone")));
 
                 try {
                     taskService.editTask(
-                            new TaskId(Long.parseLong(request.getParameter("taskId"))), task);
+                            new TaskId(Long.parseLong(putRequestParams.get("taskId"))), task);
                 } catch (InvalidDescriptionException e) {
                     JsonContent result = new JsonContent();
                     result.put("message", e.getMessage());
@@ -98,6 +104,7 @@ public class TaskController extends AbstractTodoListApplicationController {
                             taskContent.put("description", task.getDescription());
                             taskContent.put("isDone", String.valueOf(task.isDone()));
                             taskContent.put("taskId", task.getTaskId().value().toString());
+                            taskContent.put("creationDate", task.getCreationDate());
                             return taskContent.getResultContent();
                         }).collect(Collectors.toList());
 
@@ -124,7 +131,7 @@ public class TaskController extends AbstractTodoListApplicationController {
                 try {
                     createdTaskId = taskService.add(
                             new Task(request.getParameter("description"),
-                                token.get().getUserId()));
+                                token.get().getUserId(), LocalDateTime.now().toString()));
                 } catch (InvalidDescriptionException e) {
                     JsonContent result = new JsonContent();
                     result.put("message", e.getMessage());
@@ -145,5 +152,4 @@ public class TaskController extends AbstractTodoListApplicationController {
             instance = new TaskController(handlerRegistry);
         }
     }
-
 }

@@ -9,7 +9,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -38,7 +40,7 @@ public class TaskServiceShould {
 
     @Test
     public void addTask() {
-        Task task = new Task("Some task to be done.", userId);
+        Task task = new Task("Some task to be done.", userId, LocalDateTime.now().toString());
 
         TaskId addedTaskId = null;
         try {
@@ -55,7 +57,7 @@ public class TaskServiceShould {
 
     @Test
     public void returnTaskById() {
-        Task task = new Task("Some task to be done.", userId);
+        Task task = new Task("Some task to be done.", userId, LocalDateTime.now().toString());
 
         TaskId addedTaskId = null;
         try {
@@ -76,7 +78,7 @@ public class TaskServiceShould {
 
     @Test
     public void returnTaskByUser() {
-        Task task = new Task("Some task to be done.", userId);
+        Task task = new Task("Some task to be done.", userId, LocalDateTime.now().toString());
 
         TaskId addedTaskId = null;
         try {
@@ -92,17 +94,17 @@ public class TaskServiceShould {
 
         assertTrue("Failed due incorrect user tasks.", actual.contains(
                 new TaskDto(task.getId(), task.getDescription(),
-                        task.getCreatorId(), task.isDone())));
+                        task.getCreatorId(), task.getCreationDate(), task.isDone())));
     }
 
     @Test
     public void editTask() {
         try {
-            Task task = new Task("Some task to be done.", userId);
+            Task task = new Task("Some task to be done.", userId, LocalDateTime.now().toString());
 
             TaskId addedTaskId = taskService.add(task);
 
-            Task newTask = new Task("New description.", userId);
+            Task newTask = new Task("New description.", userId, LocalDateTime.now().toString());
 
             taskService.editTask(addedTaskId, newTask);
 
@@ -121,7 +123,7 @@ public class TaskServiceShould {
 
     @Test
     public void deleteTask() {
-        Task task = new Task("Some task to be done.", userId);
+        Task task = new Task("Some task to be done.", userId, LocalDateTime.now().toString());
 
         TaskId addedTaskId = null;
         try {
