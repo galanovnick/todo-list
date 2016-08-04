@@ -13,6 +13,7 @@ define(function(require) {
 	require("lib/eventBus");
 	require("todolist");
 	require("service/remoteUserService");
+	require("service/remoteTaskService");
 	require("uiComponents/registration");
 	require("uiComponents/login");
 
