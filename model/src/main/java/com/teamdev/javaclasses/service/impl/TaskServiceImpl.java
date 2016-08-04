@@ -1,5 +1,6 @@
 package com.teamdev.javaclasses.service.impl;
 
+import com.teamdev.javaclasses.service.InvalidDescriptionException;
 import com.teamdev.javaclasses.service.TaskService;
 import com.teamdev.javaclasses.service.dto.TaskDto;
 import com.teamedv.javaclasses.todolist.entity.Task;
@@ -11,6 +12,8 @@ import com.teamedv.javaclasses.todolist.repository.impl.UserTasksRepository;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -23,8 +26,19 @@ public class TaskServiceImpl implements TaskService {
     private final UserTasksRepository userTasksRepository = UserTasksRepository.getInstance();
 
     @Override
-    public TaskId add(Task task) {
+    public TaskId add(Task task) throws InvalidDescriptionException {
         checkNotNull(task, "Task cannot be null");
+
+        if (task.getDescription().equals("")) {
+            throw new InvalidDescriptionException("Description cannot be empty.");
+        }
+
+        Pattern patter = Pattern.compile("^( +)");
+        Matcher matcher = patter.matcher(task.getDescription());
+
+        if (matcher.find()) {
+            throw new InvalidDescriptionException("Description cannot start with whitespace.");
+        }
 
         TaskId taskId = taskRepository.add(task);
         userTasksRepository.add(new UserTask(task.getCreatorId(), task.getId()));
@@ -47,6 +61,7 @@ public class TaskServiceImpl implements TaskService {
                     Optional<Task> one = taskRepository.findOne(userTask.getTaskId());
                     if (one.isPresent()) {
                         return new TaskDto(
+                                one.get().getId(),
                                 one.get().getDescription(),
                                 one.get().getCreatorId(),
                                 one.get().isDone());
@@ -57,10 +72,19 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void editTask(TaskId taskId, Task task) {
+    public void editTask(TaskId taskId, Task task) throws InvalidDescriptionException {
+        if (task.getDescription().equals("")) {
+            throw new InvalidDescriptionException("Description cannot be empty.");
+        }
+
+        Pattern patter = Pattern.compile("^( +)");
+        Matcher matcher = patter.matcher(task.getDescription());
+
+        if (matcher.find()) {
+            throw new InvalidDescriptionException("Description cannot start with whitespace.");
+        }
         Optional<Task> one = taskRepository.findOne(taskId);
         if (one.isPresent()) {
-            one.get().setCreatorId(task.getCreatorId());
             one.get().setDescription(task.getDescription());
             one.get().setDone(task.isDone());
         } else {

@@ -11,7 +11,7 @@ import com.teamdev.javaclasses.todolist.handler.UrlMethodPair;
 import com.teamdev.javaclasses.todolist.content.JsonContent;
 import com.teamdev.javaclasses.todolist.content.JsonResultWriter;
 import com.teamedv.javaclasses.todolist.entity.tiny.Password;
-import com.teamedv.javaclasses.todolist.entity.tiny.Username;
+import com.teamedv.javaclasses.todolist.entity.tiny.Email;
 
 import java.util.Optional;
 
@@ -44,7 +44,7 @@ public class UserController extends AbstractTodoListApplicationController {
             JsonContent result = new JsonContent();
 
             RegistrationDto regDto = new RegistrationDto(
-                    new Username(request.getParameter(USERNAME_PARAMETER)),
+                    new Email(request.getParameter(USERNAME_PARAMETER)),
                     new Password(request.getParameter(PASSWORD_PARAMETER)),
                     new Password(request.getParameter(PASSWORD_CONFIRM_PARAMETER))
             );
@@ -69,7 +69,7 @@ public class UserController extends AbstractTodoListApplicationController {
             AuthenticationTokenDto token;
 
             try {
-                token = userService.login(new Username(request.getParameter(USERNAME_PARAMETER)),
+                token = userService.login(new Email(request.getParameter(USERNAME_PARAMETER)),
                         new Password(request.getParameter(PASSWORD_PARAMETER)));
             } catch (AuthenticationException e) {
                 result.put(MESSAGE_PARAMETER, e.getMessage());
@@ -96,7 +96,7 @@ public class UserController extends AbstractTodoListApplicationController {
                 JsonContent result = new JsonContent();
                 result.put(USERNAME_PARAMETER,
                         userService.getUser(token.get().getUserId())
-                                .getUsername());
+                                .getEmail());
                 return new JsonResultWriter(result, 200);
             } else {
                 return authenticationRequiredErrorWriter();

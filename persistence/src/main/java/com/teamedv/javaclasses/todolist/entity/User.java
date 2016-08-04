@@ -1,8 +1,8 @@
 package com.teamedv.javaclasses.todolist.entity;
 
+import com.teamedv.javaclasses.todolist.entity.tiny.Email;
 import com.teamedv.javaclasses.todolist.entity.tiny.Password;
 import com.teamedv.javaclasses.todolist.entity.tiny.UserId;
-import com.teamedv.javaclasses.todolist.entity.tiny.Username;
 
 public class User implements Entity<UserId> {
 
@@ -10,8 +10,8 @@ public class User implements Entity<UserId> {
     private String username;
     private String password;
 
-    public User(Username username, Password password) {
-        this.username = username.value();
+    public User(Email email, Password password) {
+        this.username = email.value();
         this.password = password.value();
     }
 

@@ -3,9 +3,9 @@ package com.teamdev.javaclasses.service;
 import com.teamdev.javaclasses.service.dto.AuthenticationTokenDto;
 import com.teamdev.javaclasses.service.dto.RegistrationDto;
 import com.teamdev.javaclasses.service.impl.UserServiceImpl;
+import com.teamedv.javaclasses.todolist.entity.tiny.Email;
 import com.teamedv.javaclasses.todolist.entity.tiny.Password;
 import com.teamedv.javaclasses.todolist.entity.tiny.UserId;
-import com.teamedv.javaclasses.todolist.entity.tiny.Username;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +18,7 @@ public class UserServiceShould {
     private final UserService userService = UserServiceImpl.getInstance();
 
     private final RegistrationDto user = new RegistrationDto(
-            new Username("Vasya"),
+            new Email("vasya@mail.com"),
             new Password("123"),
             new Password("123"));
 
@@ -48,7 +48,7 @@ public class UserServiceShould {
         AuthenticationTokenDto token = null;
         try {
             token = userService.login(
-                    new Username(this.user.getUsername()),
+                    new Email(this.user.getEmail()),
                     new Password(this.user.getPassword()));
         } catch (AuthenticationException e) {
             fail("Failed user addition.");
@@ -72,7 +72,7 @@ public class UserServiceShould {
     @Test(expected = InvalidUserDataException.class)
     public void notRegisterUserWithDifferentPasswords() throws InvalidUserDataException {
         final RegistrationDto user = new RegistrationDto(
-                new Username("Vasya"),
+                new Email("Vasya"),
                 new Password("123"),
                 new Password("321"));
 
@@ -84,7 +84,7 @@ public class UserServiceShould {
     @Test(expected = AuthenticationException.class)
     public void notAuthenticateInvalidUser() throws AuthenticationException {
         userService.login(
-                new Username(randomUUID().toString()),
+                new Email(randomUUID().toString()),
                 new Password(randomUUID().toString()));
 
         fail("Expected AuthenticationException.");

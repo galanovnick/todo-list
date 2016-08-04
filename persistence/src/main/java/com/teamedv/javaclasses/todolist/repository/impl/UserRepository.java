@@ -2,7 +2,6 @@ package com.teamedv.javaclasses.todolist.repository.impl;
 
 import com.teamedv.javaclasses.todolist.entity.User;
 import com.teamedv.javaclasses.todolist.entity.tiny.UserId;
-import com.teamedv.javaclasses.todolist.entity.tiny.Username;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;

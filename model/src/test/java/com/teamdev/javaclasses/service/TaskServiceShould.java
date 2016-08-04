@@ -1,6 +1,5 @@
 package com.teamdev.javaclasses.service;
 
-import com.sun.tracing.dtrace.Attributes;
 import com.teamdev.javaclasses.service.dto.TaskDto;
 import com.teamdev.javaclasses.service.impl.TaskServiceImpl;
 import com.teamedv.javaclasses.todolist.entity.Task;
@@ -41,7 +40,13 @@ public class TaskServiceShould {
     public void addTask() {
         Task task = new Task("Some task to be done.", userId);
 
-        TaskId addedTaskId = taskService.add(task);
+        TaskId addedTaskId = null;
+        try {
+            addedTaskId = taskService.add(task);
+        } catch (InvalidDescriptionException e) {
+            e.printStackTrace();
+            fail("Unexpected exception: " + e.getClass());
+        }
 
         taskService.delete(addedTaskId);
 
@@ -52,7 +57,13 @@ public class TaskServiceShould {
     public void returnTaskById() {
         Task task = new Task("Some task to be done.", userId);
 
-        TaskId addedTaskId = taskService.add(task);
+        TaskId addedTaskId = null;
+        try {
+            addedTaskId = taskService.add(task);
+        } catch (InvalidDescriptionException e) {
+            e.printStackTrace();
+            fail("Unexpected exception: " + e.getClass());
+        }
 
         TaskDto actual = taskService.getById(addedTaskId);
 
@@ -67,40 +78,58 @@ public class TaskServiceShould {
     public void returnTaskByUser() {
         Task task = new Task("Some task to be done.", userId);
 
-        TaskId addedTaskId = taskService.add(task);
+        TaskId addedTaskId = null;
+        try {
+            addedTaskId = taskService.add(task);
+        } catch (InvalidDescriptionException e) {
+            e.printStackTrace();
+            fail("Unexpected exception: " + e.getClass());
+        }
 
         Collection<TaskDto> actual = taskService.getByUser(userId);
 
         taskService.delete(addedTaskId);
 
         assertTrue("Failed due incorrect user tasks.", actual.contains(
-                new TaskDto(task.getDescription(), task.getCreatorId(), task.isDone())));
+                new TaskDto(task.getId(), task.getDescription(),
+                        task.getCreatorId(), task.isDone())));
     }
 
     @Test
     public void editTask() {
-        Task task = new Task("Some task to be done.", userId);
+        try {
+            Task task = new Task("Some task to be done.", userId);
 
-        TaskId addedTaskId = taskService.add(task);
+            TaskId addedTaskId = taskService.add(task);
 
-        Task newTask = new Task("New description.", userId);
+            Task newTask = new Task("New description.", userId);
 
-        taskService.editTask(addedTaskId, newTask);
+            taskService.editTask(addedTaskId, newTask);
 
-        TaskDto actual = taskService.getById(addedTaskId);
+            TaskDto actual = taskService.getById(addedTaskId);
 
-        taskService.delete(addedTaskId);
+            taskService.delete(addedTaskId);
 
-        assertEquals("Failed due incorrect description.", newTask.getDescription(), actual.getDescription());
-        assertEquals("Failed due incorrect creator id.", newTask.getCreatorId(), actual.getCreatorId());
-        assertEquals("Failed due incorrect done flag.", newTask.isDone(), actual.isDone());
+            assertEquals("Failed due incorrect description.", newTask.getDescription(), actual.getDescription());
+            assertEquals("Failed due incorrect creator id.", newTask.getCreatorId(), actual.getCreatorId());
+            assertEquals("Failed due incorrect done flag.", newTask.isDone(), actual.isDone());
+        } catch (InvalidDescriptionException e) {
+            e.printStackTrace();
+            fail("Unexpected exception: " + e.getClass());
+        }
     }
 
     @Test
     public void deleteTask() {
         Task task = new Task("Some task to be done.", userId);
 
-        TaskId addedTaskId = taskService.add(task);
+        TaskId addedTaskId = null;
+        try {
+            addedTaskId = taskService.add(task);
+        } catch (InvalidDescriptionException e) {
+            e.printStackTrace();
+            fail("Unexpected exception: " + e.getClass());
+        }
 
         taskService.delete(addedTaskId);
 

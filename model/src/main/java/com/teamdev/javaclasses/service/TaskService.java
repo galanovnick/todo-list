@@ -9,13 +9,13 @@ import java.util.Collection;
 
 public interface TaskService {
 
-    TaskId add(Task task);
+    TaskId add(Task task) throws InvalidDescriptionException;
 
     TaskDto getById(TaskId taskId);
 
     Collection<TaskDto> getByUser(UserId userId);
 
-    void editTask(TaskId taskId, Task task);
+    void editTask(TaskId taskId, Task task) throws InvalidDescriptionException;
 
     void delete(TaskId taskId);
 }

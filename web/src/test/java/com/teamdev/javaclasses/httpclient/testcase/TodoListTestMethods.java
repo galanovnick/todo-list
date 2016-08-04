@@ -3,7 +3,6 @@ package com.teamdev.javaclasses.httpclient.testcase;
 import com.teamedv.javaclasses.httpclient.testunit.HttpClientTestUnit;
 import com.teamedv.javaclasses.httpclient.testunit.impl.Request;
 import com.teamedv.javaclasses.httpclient.testunit.impl.Response;
-import com.teamedv.javaclasses.todolist.entity.tiny.TaskId;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -49,7 +48,6 @@ import java.util.List;
         params.add(new BasicNameValuePair("description", newDescription));
         params.add(new BasicNameValuePair("isDone", String.valueOf(isDone)));
         params.add(new BasicNameValuePair("token", token));
-
         return testUnit.sendPut(new Request(params, baseUrl + "task"));
     }
 
@@ -60,7 +58,7 @@ import java.util.List;
     }
 
     /*package*/ static Response getTaskList(String token, HttpClientTestUnit testUnit) {
-        return testUnit.sendDelete(new Request(
+        return testUnit.sendGet(new Request(
                 String.format("%stask?token=%s", baseUrl, token)
         ));
     }

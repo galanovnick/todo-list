@@ -8,9 +8,9 @@ import com.teamdev.javaclasses.service.dto.RegistrationDto;
 import com.teamdev.javaclasses.service.dto.UserDto;
 import com.teamedv.javaclasses.todolist.entity.AuthenticationToken;
 import com.teamedv.javaclasses.todolist.entity.User;
+import com.teamedv.javaclasses.todolist.entity.tiny.Email;
 import com.teamedv.javaclasses.todolist.entity.tiny.Password;
 import com.teamedv.javaclasses.todolist.entity.tiny.UserId;
-import com.teamedv.javaclasses.todolist.entity.tiny.Username;
 import com.teamedv.javaclasses.todolist.repository.impl.AuthenticationTokenRepository;
 import com.teamedv.javaclasses.todolist.repository.impl.UserRepository;
 import org.slf4j.Logger;
@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -40,66 +42,76 @@ public class UserServiceImpl implements UserService {
 
         if (log.isDebugEnabled()) {
             log.debug(String.format("Trying to register user with name ='%s'...",
-                    userData.getUsername()));
+                    userData.getEmail()));
         }
 
-        if (userData.getUsername().equals("")
+        if (userData.getEmail().equals("")
                 || userData.getPassword().equals("")
                 || userData.getPasswordConfirm().equals("")) {
             if (log.isDebugEnabled()) {
                 log.debug(String.format("Failed attempt to register user with name " +
-                        "= '%s'. Reason: empty fields.", userData.getUsername()));
+                        "= '%s'. Reason: empty fields.", userData.getEmail()));
             }
             throw new InvalidUserDataException("Fields cannot be empty.");
         }
+
+
+
+        Pattern patter = Pattern.compile("(.+@.+\\..+)");
+        Matcher matcher = patter.matcher(userData.getEmail());
+
+        if (!matcher.find()) {
+            throw new InvalidUserDataException("Invalid email address.");
+        }
+
         if (!userData.getPassword().equals(userData.getPasswordConfirm())) {
             if (log.isDebugEnabled()) {
                 log.debug(String.format("Failed attempt to register user with name = '%s'. " +
-                        "Reason: different passwords.", userData.getUsername()));
+                        "Reason: different passwords.", userData.getEmail()));
             }
             throw new InvalidUserDataException("Passwords do not match.");
         }
-        if (userRepository.getUserByUsername(userData.getUsername()).isPresent()) {
+        if (userRepository.getUserByUsername(userData.getEmail()).isPresent()) {
             if (log.isDebugEnabled()) {
                 log.debug(String.format("Failed attempt to register user with name = '%s'. " +
-                        "Reason: user already exists.", userData.getUsername()));
+                        "Reason: user already exists.", userData.getEmail()));
             }
             throw new InvalidUserDataException("User with such name already exists.");
         }
         final UserId resId = userRepository.add(
-                new User(new Username(userData.getUsername()),
+                new User(new Email(userData.getEmail()),
                         new Password(userData.getPassword())));
 
         if (log.isDebugEnabled()) {
             log.debug(String.format("User with name = '%s' successfully registered.",
-                    userData.getUsername()));
+                    userData.getEmail()));
         }
 
         return resId;
     }
 
     @Override
-    public AuthenticationTokenDto login(Username Username, Password password)
+    public AuthenticationTokenDto login(Email Email, Password password)
             throws AuthenticationException {
 
-        checkNotNull(Username, "Username cannot be null");
+        checkNotNull(Email, "Email cannot be null");
         checkNotNull(password, "Password cannot be null");
 
-        if (Username.value().equals("") || password.value().equals("")) {
+        if (Email.value().equals("") || password.value().equals("")) {
             if (log.isDebugEnabled()) {
-                log.debug(String.format("Failed attempt to authenticate user with Username = '%s'." +
+                log.debug(String.format("Failed attempt to authenticate user with Email = '%s'." +
                                 "Reason: empty fields.",
-                        Username.value()));
+                        Email.value()));
             }
             throw new AuthenticationException("Fields cannot be empty.");
         }
 
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Trying to authenticated user with Username = '%s'...",
-                    Username.value()));
+            log.debug(String.format("Trying to authenticated user with Email = '%s'...",
+                    Email.value()));
         }
 
-        Optional<User> user = userRepository.getUserByUsername(Username.value());
+        Optional<User> user = userRepository.getUserByUsername(Email.value());
 
         if (user.isPresent() && user.get().getPassword().equals(password.value())) {
             AuthenticationToken token = new AuthenticationToken(
@@ -107,16 +119,16 @@ public class UserServiceImpl implements UserService {
                     user.get().getId().value());
             tokenRepository.add(token);
             if (log.isDebugEnabled()) {
-                log.debug(String.format("User with Username = '%s' successfully authenticated.",
-                        Username.value()));
+                log.debug(String.format("User with Email = '%s' successfully authenticated.",
+                        Email.value()));
             }
             return new AuthenticationTokenDto(token.getToken());
         }
 
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Failed attempt to authenticate user with Username = '%s'." +
-                            "Reason: invalid Username or password.",
-                    Username.value()));
+            log.debug(String.format("Failed attempt to authenticate user with Email = '%s'." +
+                            "Reason: invalid Email or password.",
+                    Email.value()));
         }
         throw new AuthenticationException("Invalid username or password.");
     }
@@ -129,7 +141,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Collection<UserDto> getAllRegisteredUsers() {
         return userRepository.findAll().stream()
-                .map(user -> new UserDto(new Username(user.getUsername())))
+                .map(user -> new UserDto(new Email(user.getUsername())))
                 .collect(Collectors.toList());
     }
 
@@ -181,7 +193,7 @@ public class UserServiceImpl implements UserService {
     public UserDto getUser(UserId userId) {
         Optional<User> user = userRepository.findOne(userId);
         if (user.isPresent()) {
-            return new UserDto(new Username(user.get().getUsername()));
+            return new UserDto(new Email(user.get().getUsername()));
         }
         throw new IllegalStateException("Attempt to get user by invalid id.");
     }

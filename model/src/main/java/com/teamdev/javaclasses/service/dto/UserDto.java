@@ -1,21 +1,21 @@
 package com.teamdev.javaclasses.service.dto;
 
-import com.teamedv.javaclasses.todolist.entity.tiny.Username;
+import com.teamedv.javaclasses.todolist.entity.tiny.Email;
 
 public class UserDto {
 
-    private String username;
+    private String email;
 
-    public UserDto(Username username) {
-        this.username = username.value();
+    public UserDto(Email email) {
+        this.email = email.value();
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
@@ -25,12 +25,12 @@ public class UserDto {
 
         UserDto userDto = (UserDto) o;
 
-        return username != null ? username.equals(userDto.username) : userDto.username == null;
+        return email != null ? email.equals(userDto.email) : userDto.email == null;
 
     }
 
     @Override
     public int hashCode() {
-        return username != null ? username.hashCode() : 0;
+        return email != null ? email.hashCode() : 0;
     }
 }

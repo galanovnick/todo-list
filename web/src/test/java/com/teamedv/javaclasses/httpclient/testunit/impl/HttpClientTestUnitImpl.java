@@ -1,5 +1,6 @@
 package com.teamedv.javaclasses.httpclient.testunit.impl;
 
+import com.google.gson.JsonObject;
 import com.teamedv.javaclasses.httpclient.testunit.HttpClientTestUnit;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -7,6 +8,7 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
 
 import java.io.IOException;
 
@@ -25,7 +27,6 @@ public class HttpClientTestUnitImpl implements HttpClientTestUnit {
     public Response sendPost(Request request) {
         HttpPost post = new HttpPost(request.getUrl());
         post.setHeader("User-Agent", USER_AGENT);
-
         try {
             post.setEntity(new UrlEncodedFormEntity(request.getParams()));
             return new Response(httpClient.execute(post));
@@ -39,10 +40,10 @@ public class HttpClientTestUnitImpl implements HttpClientTestUnit {
     @Override
     public Response sendPut(Request request) {
         HttpPut put = new HttpPut(request.getUrl());
-        put.setHeader("User-Agent", USER_AGENT);
-
+        final JsonObject json = new JsonObject();
+        request.getParams().forEach(param -> json.addProperty(param.getName(), param.getValue()));
         try {
-            put.setEntity(new UrlEncodedFormEntity(request.getParams()));
+            put.setEntity(new StringEntity(json.toString()));
             return new Response(httpClient.execute(put));
         } catch (Exception e) {
             e.printStackTrace();

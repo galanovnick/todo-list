@@ -5,7 +5,7 @@ import com.teamdev.javaclasses.service.dto.RegistrationDto;
 import com.teamdev.javaclasses.service.dto.UserDto;
 import com.teamedv.javaclasses.todolist.entity.tiny.Password;
 import com.teamedv.javaclasses.todolist.entity.tiny.UserId;
-import com.teamedv.javaclasses.todolist.entity.tiny.Username;
+import com.teamedv.javaclasses.todolist.entity.tiny.Email;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -25,7 +25,7 @@ public interface UserService {
 
     Collection<AuthenticationTokenDto> getAllTokens();
 
-    AuthenticationTokenDto login(Username username, Password password) throws AuthenticationException;
+    AuthenticationTokenDto login(Email email, Password password) throws AuthenticationException;
 
     Optional<AuthenticationTokenDto> checkAuthentication(AuthenticationTokenDto token);
 }

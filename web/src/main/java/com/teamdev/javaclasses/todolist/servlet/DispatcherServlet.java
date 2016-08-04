@@ -1,6 +1,7 @@
 package com.teamdev.javaclasses.todolist.servlet;
 
 import com.teamdev.javaclasses.todolist.content.ResultWriter;
+import com.teamdev.javaclasses.todolist.controller.TaskController;
 import com.teamdev.javaclasses.todolist.controller.UserController;
 import com.teamdev.javaclasses.todolist.handler.*;
 
@@ -17,6 +18,7 @@ public class DispatcherServlet extends HttpServlet {
     public DispatcherServlet() {
         super();
         UserController.instantiate(handlerRegistry);
+        TaskController.instantiate(handlerRegistry);
     }
 
     @Override
@@ -34,6 +36,12 @@ public class DispatcherServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        handleRequest(req, resp);
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         handleRequest(req, resp);
     }

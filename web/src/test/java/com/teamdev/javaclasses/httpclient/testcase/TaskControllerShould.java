@@ -20,7 +20,7 @@ public class TaskControllerShould {
 
     @Before
     public void before() {
-        String username = randomUUID().toString();
+        String username = randomUUID().toString() + "@mail.com";
         registerUser(username, "123", "123", testUnit)
             .isStatusCodeEquals(SC_OK)
             .hasProperty("message", "User has been successfully registered.");
@@ -37,7 +37,7 @@ public class TaskControllerShould {
     public void handleTaskAddition() {
         createTask("Task description", token, testUnit)
             .isStatusCodeEquals(SC_OK)
-            .isJson();
+            .hasProperty("taskId");
     }
 
     @Test
@@ -72,8 +72,10 @@ public class TaskControllerShould {
     public void handleTasksGet() {
         createTask("Task description", token, testUnit)
             .isStatusCodeEquals(SC_OK)
-            .hasProperty("taskId");
+            .isJson();
 
-        getTaskList(token, testUnit);
+        getTaskList(token, testUnit)
+            .isStatusCodeEquals(SC_OK)
+            .hasProperty("tasks");
     }
 }
